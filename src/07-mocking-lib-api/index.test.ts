@@ -1,5 +1,5 @@
 // Uncomment the code below and write your tests
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { throttledGetDataFromApi } from './index';
 
 jest.mock('lodash', () => {
@@ -7,78 +7,53 @@ jest.mock('lodash', () => {
   return {
     __esModule: true,
     ...originalModule,
-    throttle: jest.fn((fn) => fn), //fn) => fn // we used empty jest.fn() before - but it can take implementaion as parameter
+    throttle: jest.fn((fn) => fn),
   };
 });
 
 const mockedResponse = { data: 'I am your data. and tata.' };
 const relativePath = 'apiPath';
-// jest.mock('axios');
-
-// jest.mock('axios', () => {
-//   const originalModule = jest.requireActual('axios');
-//   return {
-//     __esModule: true,
-//     ...originalModule,
-//   };
-// });
-
-// jest.mock('axios', () => {
-//   //const originalModule = jest.requireActual('axios');
-//   return {
-//     __esModule: true,
-//     // ...originalModule,
-//     create: jest.fn(function () {
-//       return {
-//         get: jest.fn(() => Promise.resolve(mockedResponse)),
-//       };
-//     }),
-//   };
-// });
 
 describe('throttledGetDataFromApi', () => {
-  // beforeAll(() => {
-
-  // });
-
   afterAll(() => {
     jest.unmock('lodash');
-    //jest.unmock('axios');
+  });
+  let createSpy: jest.SpyInstance;
+  let mockAxiosInstance: { get: jest.Mock };
+
+  beforeEach(() => {
+    // Create a fresh mock function for 'get' for each test
+    mockAxiosInstance = {
+      get: jest.fn().mockResolvedValue(mockedResponse),
+    };
+    // Spy on axios.create and make it return our mock instance
+    createSpy = jest
+      .spyOn(axios, 'create')
+      .mockReturnValue(mockAxiosInstance as unknown as AxiosInstance);
+  });
+
+  afterEach(() => {
+    // Restore the original implementation after each test
+    createSpy.mockRestore();
   });
 
   test('should create instance with provided base url', async () => {
-    //const mockedCreate = jest.spyOn(axios, 'create');
-    //jest.spyOn(axios, 'create');
-
-    //axios.create().mockImplementation(() => Promise.resolve(response));
-
-    jest.mock('axios.create.get', () =>
-      jest.fn(() => Promise.resolve(mockedResponse)),
-    );
-    //jest.spyOn(axios.create(), 'get').mockResolvedValue(mockedResponse);
-    const spyed = jest.spyOn(axios, 'create');
     const returned = await throttledGetDataFromApi(relativePath);
-    expect(returned).toBe(mockedResponse.data);
-    expect(spyed).toBeCalled();
 
-    // const returned = await throttledGetDataFromApi(relativePath);
-    // expect(returned).toBe('I am your data. and tata.');
-    //expect(mockedCreate).toBeCalled();
-    // expect(mockedCreate).toBeCalledWith({
-    //   baseURL: 'https://jsonplaceholder.typicode.com',
-    // });
+    expect(createSpy).toHaveBeenCalledWith({
+      baseURL: 'https://jsonplaceholder.typicode.com',
+    });
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith(relativePath);
+    expect(returned).toBe(mockedResponse.data);
   });
 
-  // test('should perform request to correct provided url', async () => {
-  //   const mockedGet = jest.spyOn(axios.create(), 'get'); //
-  //   //const mockedCreate = jest.spyOn(axios.create());
+  test('should perform request to correct provided url', async () => {
+    await throttledGetDataFromApi(relativePath);
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith(relativePath);
+  });
 
-  //   await throttledGetDataFromApi(relativePath);
-  //   expect(mockedGet).toBeCalledWith(relativePath);
-  // });
-
-  // test('should return response data', async () => {
-  //   const data = await throttledGetDataFromApi(path);
-  //   expect(data).toBe('data');
-  // });
+  test('should return response data', async () => {
+    const data = await throttledGetDataFromApi(relativePath);
+    expect(data).toBe(mockedResponse.data);
+  });
 });

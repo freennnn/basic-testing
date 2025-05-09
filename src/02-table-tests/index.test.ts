@@ -16,15 +16,9 @@ const testCases = [
 ];
 
 describe('simpleCalculator', () => {
-  // for (const testCase of testCases) {
-  //   test(`${testCase.a} ${testCase.action} ${testCase.b} expected to be ${testCase.expected}`);
-  //   expect(simpleCalculator( { a: 'A', b: 'B', action: 'Sideli na trube' })).toBeNull(); // are error mesages with toBeNull() really nicer? 
-  // }
-
   test.each(testCases)(
     'I guess no real parameters interpolation can be used here',
     ({ a, b, action, expected }) => {
-      console.log(`${a} ${action} ${b} expected to be ${expected}`);
       expect(simpleCalculator({ a, b, action })).toBe(expected);
     },
   );

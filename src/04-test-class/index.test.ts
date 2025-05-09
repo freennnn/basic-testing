@@ -55,21 +55,24 @@ describe('BankAccount', () => {
     const amountToTransfer = 1;
     expect(myAcc.transfer(amountToTransfer, yourAcc).getBalance()).toBe(
       myBalance - amountToTransfer,
-    ); // money ushli
-    expect(yourAcc.getBalance()).toBe(yourBalance + amountToTransfer); // money prishli
+    );
+    expect(yourAcc.getBalance()).toBe(yourBalance + amountToTransfer);
   });
 
-  // another easier option would be to mock fetchBalance() and return mockedFetchAmount without caring for lodash.random() result at all
-  // next text case is an example of that
   test('fetchBalance should return number in case if request did not failed', async () => {
     jest
       .spyOn(lodash, 'random')
       .mockReturnValueOnce(mockedFetchAmount)
+      .mockReturnValueOnce(1) // 1 return number, 0 - throw error
+      .mockReturnValueOnce(100500)
       .mockReturnValueOnce(1);
-    const result = await myAcc.fetchBalance();
+    let result = await myAcc.fetchBalance();
     expect(result).toBe(mockedFetchAmount);
+    result = await myAcc.fetchBalance();
+    expect(result).toBe(100500);
   });
 
+  // another easier option would be to mock fetchBalance() instead of lodash.random()
   test('should set new balance if fetchBalance returned number', async () => {
     jest.spyOn(myAcc, 'fetchBalance').mockResolvedValueOnce(mockedFetchAmount);
 
