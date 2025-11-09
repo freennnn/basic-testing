@@ -17,7 +17,7 @@ const testCases = [
 
 describe('simpleCalculator', () => {
   test.each(testCases)(
-    'I guess no real parameters interpolation can be used here',
+    'should calculate $a $action $b toBe $expected',
     ({ a, b, action, expected }) => {
       expect(simpleCalculator({ a, b, action })).toBe(expected);
     },
