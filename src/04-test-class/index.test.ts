@@ -20,17 +20,17 @@ describe('BankAccount', () => {
   test('should throw InsufficientFundsError error when withdrawing more than balance', () => {
     expect(() =>
       yourAcc.withdraw(yourAccStartingBalance + myAccStartingBalance),
-    ).toThrowError(InsufficientFundsError);
+    ).toThrow(InsufficientFundsError);
   });
 
   test('should throw error when transferring more than balance', () => {
     expect(() =>
       myAcc.transfer(myAcc.getBalance() + 100500, yourAcc),
-    ).toThrowError(InsufficientFundsError);
+    ).toThrow(InsufficientFundsError);
   });
 
   test('should throw error when transferring to the same account', () => {
-    expect(() => yourAcc.transfer(100500, yourAcc)).toThrowError(
+    expect(() => yourAcc.transfer(100500, yourAcc)).toThrow(
       TransferFailedError,
     );
   });
@@ -63,7 +63,7 @@ describe('BankAccount', () => {
     jest
       .spyOn(lodash, 'random')
       .mockReturnValueOnce(mockedFetchAmount)
-      .mockReturnValueOnce(1) // 1 return number, 0 - throw error
+      .mockReturnValueOnce(1) // with 1 - fetchBalance() returns number, with 0 - throw error
       .mockReturnValueOnce(100500)
       .mockReturnValueOnce(1);
     let result = await myAcc.fetchBalance();
