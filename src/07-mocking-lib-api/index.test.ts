@@ -20,7 +20,6 @@ import { throttledGetDataFromApi } from './index';
 //   ↓
 // Returns 'I am your data. and tata.'
 
-
 jest.mock('lodash', () => {
   const originalModule = jest.requireActual('lodash');
   return {
@@ -34,9 +33,6 @@ const mockedResponse = { data: 'I am your data. and tata.' };
 const relativePath = 'apiPath';
 
 describe('throttledGetDataFromApi', () => {
-  afterAll(() => {
-    jest.unmock('lodash');
-  });
   let createSpy: jest.SpyInstance;
   let mockAxiosInstance: { get: jest.Mock };
 
@@ -62,7 +58,6 @@ describe('throttledGetDataFromApi', () => {
     expect(createSpy).toHaveBeenCalledWith({
       baseURL: 'https://jsonplaceholder.typicode.com',
     });
-
   });
 
   test('should perform request to correct provided url', async () => {
@@ -73,5 +68,9 @@ describe('throttledGetDataFromApi', () => {
   test('should return response data', async () => {
     const data = await throttledGetDataFromApi(relativePath);
     expect(data).toBe(mockedResponse.data);
+  });
+
+  afterAll(() => {
+    jest.unmock('lodash');
   });
 });

@@ -30,7 +30,6 @@ describe('partial mocking', () => {
     mockOne();
     unmockedFunction();
     expect(logFunction).toHaveBeenCalledTimes(1);
-    unmockedFunction();
     expect(logFunction).toHaveBeenCalledWith('I am not mocked');
   });
 });

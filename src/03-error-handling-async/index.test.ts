@@ -12,15 +12,14 @@ describe('resolveValue', () => {
     // Jest implementation of expect(promise).resolves.toBe()
     // try {
     //   const resolvedValue = await promise;
-    //   if (resolvedValue === valueToResolve) { // Test Passed } 
+    //   if (resolvedValue === valueToResolve) { // Test Passed }
     //   else { throw new Error('values do not match') }
     // }
     // catch {
     //   Test failed - promise rejected or resolved to a different value
-    // }   
+    // }
 
     await expect(resolveValue(valueToResolve)).resolves.toBe(valueToResolve);
-
   });
 });
 
