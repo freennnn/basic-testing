@@ -11,7 +11,7 @@ export const generateLinkedList = <T>(elements: T[]): LinkedListNode<T> => {
   const [head, ...rest] = elements;
 
   return {
-    value: head ?? null,
+    value: head ?? null, // normalizing undefined to null from spread operator
     next: generateLinkedList(rest),
   };
 };
