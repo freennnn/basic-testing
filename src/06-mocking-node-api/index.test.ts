@@ -20,7 +20,7 @@ describe('doStuffByTimeout', () => {
     const callback = jest.fn();
     const timeout = 100;
     doStuffByTimeout(callback, timeout);
-    expect(setTimeout).toBeCalledWith(callback, timeout);
+    expect(setTimeout).toHaveBeenCalledWith(callback, timeout);
   });
 
   test('should call callback only after timeout', () => {
@@ -28,10 +28,10 @@ describe('doStuffByTimeout', () => {
     const timeout = 100;
 
     doStuffByTimeout(callback, timeout);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(timeout);
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
   });
 });
 
@@ -52,7 +52,7 @@ describe('doStuffByInterval', () => {
     const callback = jest.fn();
     const timeout = 100;
     doStuffByInterval(callback, timeout);
-    expect(setInterval).toBeCalledWith(callback, timeout);
+    expect(setInterval).toHaveBeenCalledWith(callback, timeout);
   });
 
   test('should call callback multiple times after multiple intervals', () => {
@@ -60,9 +60,9 @@ describe('doStuffByInterval', () => {
     const timeout = 100;
     const repeat = 5;
     doStuffByInterval(callback, timeout);
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
     jest.advanceTimersByTime(timeout * repeat);
-    expect(callback).toBeCalledTimes(repeat);
+    expect(callback).toHaveBeenCalledTimes(repeat);
   });
 });
 
@@ -74,7 +74,7 @@ describe('readFileAsynchronously', () => {
   test('should call join with pathToFile', async () => {
     const fakeJoin = jest.spyOn(path, 'join');
     await readFileAsynchronously(filePath);
-    expect(fakeJoin).toBeCalledWith(__dirname, filePath);
+    expect(fakeJoin).toHaveBeenCalledWith(__dirname, filePath);
   });
 
   test('should return null if file does not exist', async () => {

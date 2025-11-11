@@ -2,6 +2,25 @@
 import axios, { AxiosInstance } from 'axios';
 import { throttledGetDataFromApi } from './index';
 
+// Call throttledGetDataFromApi('apiPath')
+//   ↓
+// Lodash throttle mock: (fn) => fn
+//   ↓ (throttle bypassed, calls immediately)
+// getDataFromApi('apiPath')
+//   ↓
+// axios.create({ baseURL: 'https://...' })
+//   ↓ (createSpy intercepts)
+// mockAxiosInstance
+//   ↓
+// mockAxiosInstance.get('apiPath')
+//   ↓ (jest.fn().mockResolvedValue intercepts)
+// Returns Promise<{ data: 'I am your data. and tata.' }>
+//   ↓
+// return response.data
+//   ↓
+// Returns 'I am your data. and tata.'
+
+
 jest.mock('lodash', () => {
   const originalModule = jest.requireActual('lodash');
   return {
@@ -38,13 +57,12 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should create instance with provided base url', async () => {
-    const returned = await throttledGetDataFromApi(relativePath);
+    await throttledGetDataFromApi(relativePath);
 
     expect(createSpy).toHaveBeenCalledWith({
       baseURL: 'https://jsonplaceholder.typicode.com',
     });
-    expect(mockAxiosInstance.get).toHaveBeenCalledWith(relativePath);
-    expect(returned).toBe(mockedResponse.data);
+
   });
 
   test('should perform request to correct provided url', async () => {
