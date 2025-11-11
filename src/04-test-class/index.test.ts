@@ -8,11 +8,17 @@ import lodash from 'lodash';
 
 const myAccStartingBalance = 100;
 const yourAccStartingBalance = 0;
-const myAcc = getBankAccount(myAccStartingBalance);
-const yourAcc = getBankAccount(yourAccStartingBalance);
 const mockedFetchAmount = 20;
 
 describe('BankAccount', () => {
+  let myAcc: ReturnType<typeof getBankAccount>;
+  let yourAcc: ReturnType<typeof getBankAccount>;
+
+  beforeEach(() => {
+    myAcc = getBankAccount(myAccStartingBalance);
+    yourAcc = getBankAccount(yourAccStartingBalance);
+  });
+
   test('should create account with initial balance', () => {
     expect(myAcc.getBalance()).toBe(myAccStartingBalance);
   });
